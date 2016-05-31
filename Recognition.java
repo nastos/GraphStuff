@@ -38,5 +38,20 @@ public class Recognition {
 		return true;
 	}
 	
+	public static <V,E> boolean hasSimplicial(SimpleGraph<V,E> g) {
+		for (V v : g.vertexSet()) {
+			if (isSimplicial(g,v)) return true;
+		}
+		return false;
+	}
+	
+	public static <V,E> V getSimplicial(SimpleGraph<V,E> g) {
+		// returns 
+		for (V v : g.vertexSet()) {
+			if (isSimplicial(g,v)) return v;
+		}
+		return null;
+	}
+	
 	
 }
