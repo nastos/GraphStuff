@@ -16,19 +16,35 @@ public class Recognition {
 	public static void main(String[] args) {
         SimpleGraph<Integer, DefaultEdge>  g = new SimpleGraph<Integer, DefaultEdge>(DefaultEdge.class); 
         for (int i=1;i<=10; i++) g.addVertex(i);
-        
-        for (int i=1;i<=10; i++) {
-        	for (int j=i+1;j<=10; j++) {
-        		g.addEdge(i,j);
-        	}
-        }
-        
-        System.out.println("isChordal(g) = " + isChordal(g));
-        g.removeEdge(4,5);
-        System.out.println("isChordal(g) = " + isChordal(g));
-        g.removeEdge(7,8);
-        System.out.println("isChordal(g) = " + isChordal(g));
 
+//        for (int i=1;i<=10; i+=2) {
+//        	for (int j=i+1;j<=10; j++) {
+//        		g.addEdge(i,j);
+//        	}
+//        }
+        
+
+		g.addEdge(1,2);
+		g.addEdge(2,4);
+		g.addEdge(4,8);
+		g.addEdge(8,3);
+		g.addEdge(3,7);
+		g.addEdge(1,7);
+		g.addEdge(1,9);
+		g.addEdge(2,9);
+		g.addEdge(3,9);
+		g.addEdge(4,9);
+		g.addEdge(5,9);
+		g.addEdge(6,9);
+		g.addEdge(7,9);
+		g.addEdge(8,9);
+
+		
+        System.out.println(g);
+        System.out.println(getComplement(g));
+        System.out.println(isWeaklyChordal(g));
+        
+        
 	}
 
 	public static <V, E> int[] degSeq(SimpleGraph<V,E> g) {
@@ -95,8 +111,47 @@ public class Recognition {
 		if (d.getPathEdgeList() == null) return true;
 		return false;
 	}
-	
 
+	public static <V,E> SimpleGraph<V,E> getComplement(SimpleGraph<V,E> g) {
+		SimpleGraph<V,E> comp = new SimpleGraph<V,E>(g.getEdgeFactory());
+		for (V v : g.vertexSet()) {
+			comp.addVertex(v);
+			for (V u : comp.vertexSet()) {
+				if (u==v) continue;
+				if (g.containsEdge(u, v) == false) comp.addEdge(u, v);
+			}
+		}
+		return comp;
+	}
+	
+	public static <V,E> boolean isWeaklyChordal(SimpleGraph<V,E> g) {
+		int N = g.vertexSet().size();
+		int allPairs = (N%2==0)?(N/2)*(N-1):N*((N-1)/2);
+		int M = g.edgeSet().size();
+		SimpleGraph<V,E> g2;
+		if (2*M +5 < allPairs) g2=getComplement(g);
+		else g2 = copy(g);
+		ArrayList<V> vertices = new ArrayList<V>(g2.vertexSet());
+		boolean isWC = true;
+		M = g2.edgeSet().size();
+		while (isWC==true) {
+			isWC=false;
+			for (int i=0; i<N; i++) {
+				for (int j=i+1; j<N; j++) {
+					if (isTwoPair(g2,vertices.get(i),vertices.get(j))) {
+						isWC=true;
+						g2.addEdge(vertices.get(i), vertices.get(j));
+						M+=1;
+						System.out.println(M + " " + allPairs + " Added edge in two-pair " + vertices.get(i) + " " + vertices.get(j));
+						if (M +4 >= allPairs) return true;
+					}
+				}
+			}
+		}
+		return false;		
+		
+	}
+	
 
 	
 }
