@@ -13,6 +13,20 @@ public class Recognition {
 
 	public static void main(String[] args) {
         SimpleGraph<Integer, DefaultEdge>  g = new SimpleGraph<Integer, DefaultEdge>(DefaultEdge.class); 
+        for (int i=1;i<=10; i++) g.addVertex(i);
+        
+        for (int i=1;i<=10; i++) {
+        	for (int j=i+1;j<=10; j++) {
+        		g.addEdge(i,j);
+        	}
+        }
+        
+        System.out.println("isChordal(g) = " + isChordal(g));
+        g.removeEdge(4,5);
+        System.out.println("isChordal(g) = " + isChordal(g));
+        g.removeEdge(7,8);
+        System.out.println("isChordal(g) = " + isChordal(g));
+
 	}
 
 	public static <V, E> int[] degSeq(SimpleGraph<V,E> g) {
@@ -52,6 +66,24 @@ public class Recognition {
 		}
 		return null;
 	}
+
+	public static <V,E> boolean isChordal (SimpleGraph<V,E> g) {
+		// Take each vertex. If it is not in a large cycle, remove and go on
+		SimpleGraph<V,E> g2 = (SimpleGraph<V, E>) g.clone();
+		while (g2.vertexSet().size() > 0) {
+			V v = getSimplicial(g2);
+			if (v==null) return false;
+			g2.removeVertex(v);
+			System.out.println(g2);
+		}
+		return true;		
+	}
 	
+	public static <V,E> SimpleGraph<V,E> copy (SimpleGraph<V,E> g) {
+		return (SimpleGraph<V, E>) g.clone();
+	}
+		
+
+
 	
 }
