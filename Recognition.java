@@ -212,6 +212,18 @@ public class Recognition {
 		
 	}
 	
+	
+	/**
+	 * Inefficiently determines if the graph is split
+	 * @param g
+	 * @return true if G us a split graph
+	 */
+	
+	public static <V,E> boolean isSplit(SimpleGraph<V,E> g) {
+		if (isChordal(g) && isChordal(getComplement(g))) return true;
+		return false;
+	}
+	
 
 	
 }
