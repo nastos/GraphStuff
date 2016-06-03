@@ -11,6 +11,10 @@ import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 
+/**
+ * @author nastos
+ *
+ */
 public class Recognition {
 
 	public static void main(String[] args) {
@@ -43,12 +47,17 @@ public class Recognition {
         System.out.println(g);
         System.out.println(getComplement(g));
         System.out.println(isWeaklyChordal(g));
-        
+        degSeq(g);
         
 	}
 
+	/**
+	 * Computes the degree sequence of a graph
+	 * @param g a Simple Graph
+	 * @return int[] degree sequence
+	 */
+	
 	public static <V, E> int[] degSeq(SimpleGraph<V,E> g) {
-		// gives int array sorted by natural order of vertex order, if one exists.
 		int n = g.vertexSet().size();
 		int[] s = new int[n];
 		int i=0;
@@ -59,6 +68,13 @@ public class Recognition {
 		return s;
 	}
 
+	/**
+	 * Determines if a vertex is simplicial in a graph
+	 * @param g a simple graph
+	 * @param v a vertex in the graph
+	 * @return true if the vertices is simplicial in g. Otherwise, false.
+	 */
+	
 	public static <V,E> boolean isSimplicial(SimpleGraph<V,E> g, V v) {
 		ArrayList<V> nbrs = (ArrayList<V>) Graphs.neighborListOf(g, v);
 				
@@ -70,12 +86,24 @@ public class Recognition {
 		return true;
 	}
 	
+	/**
+	 * Checks if a graph has a simplicial vertex
+	 * @param g
+	 * @return true if the graph has a simplicial vertex
+	 */
+	
 	public static <V,E> boolean hasSimplicial(SimpleGraph<V,E> g) {
 		for (V v : g.vertexSet()) {
 			if (isSimplicial(g,v)) return true;
 		}
 		return false;
 	}
+	
+	/**
+	 * Gets a simplicial vertex in a graph.
+	 * @param g a simple graph
+	 * @return V a simplicial vertex in g, or null if none.
+	 */
 	
 	public static <V,E> V getSimplicial(SimpleGraph<V,E> g) {
 		// returns 
@@ -85,6 +113,12 @@ public class Recognition {
 		return null;
 	}
 
+	/**
+	 * Determines if a graph is chordal
+	 * @param g
+	 * @return true if g is chordal. false otherwise
+	 */
+	
 	public static <V,E> boolean isChordal (SimpleGraph<V,E> g) {
 		// Take each vertex. If it is not in a large cycle, remove and go on
 		SimpleGraph<V,E> g2 = (SimpleGraph<V, E>) g.clone();
@@ -97,9 +131,23 @@ public class Recognition {
 		return true;		
 	}
 	
+	/**
+	 * Returns a copy of g. For now, a shallow copy, using .clone(). Might change to deep copy if needed.
+	 * @param g
+	 * @return a copy of g
+	 */
+	
 	public static <V,E> SimpleGraph<V,E> copy (SimpleGraph<V,E> g) {
 		return (SimpleGraph<V, E>) g.clone();
 	}
+	
+	/**
+	 * Determines if a and b form a two-pair in g
+	 * @param g
+	 * @param a
+	 * @param b
+	 * @return boolean
+	 */
 	
 	public static <V,E> boolean isTwoPair(SimpleGraph<V,E> g, V a, V b) {
 		if (g.containsEdge(a,b) == true) return false;
@@ -112,6 +160,12 @@ public class Recognition {
 		return false;
 	}
 
+	/**
+	 * Returns the graph complement of g
+	 * @param g
+	 * @return graph complement
+	 */
+	
 	public static <V,E> SimpleGraph<V,E> getComplement(SimpleGraph<V,E> g) {
 		SimpleGraph<V,E> comp = new SimpleGraph<V,E>(g.getEdgeFactory());
 		for (V v : g.vertexSet()) {
@@ -124,6 +178,12 @@ public class Recognition {
 		return comp;
 	}
 	
+	/**
+	 * Determines if a graph is weakly chordal, using algorithm that repeatedly adds an edge between a two-pair. Performs algorithm of complement if it
+	 * is more efficient.
+	 * @param g
+	 * @return boolean
+	 */
 	public static <V,E> boolean isWeaklyChordal(SimpleGraph<V,E> g) {
 		int N = g.vertexSet().size();
 		int allPairs = (N%2==0)?(N/2)*(N-1):N*((N-1)/2);
