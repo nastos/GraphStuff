@@ -224,6 +224,97 @@ public class Recognition {
 		return false;
 	}
 	
+	/**
+	 * Usage: isP4(g,a,b,c,d). Checks if a,b,c,d (in any order) induces a P4. 
+	 * @param g
+	 * @param v
+	 * @return
+	 */
+	public static <V,E> boolean isP4(SimpleGraph<V,E> g, V... v) {
+		if (v.length != 4) {
+			System.err.println("isP4 requires 4 nodes. Found " + v);
+			return false;
+		}
+		int[] deg = new int[4]; // degree-sequence of this 4-vertex induced subgraph
+		int edgecount = 0;
+		
+		for (int i=0; i<3; i++) {
+			for (int j=i+1; j<=3; j++) {
+				if (g.containsEdge(v[i], v[j])) {
+					deg[i]++;
+					deg[j]++;
+					edgecount++;
+				}
+			}
+		}
+		if (edgecount != 3) return false;
+		// have 3 edges. Make sure they aren't a K3+v 
+		for (int i=0; i<4; i++) {
+			if (deg[i] == 0) return false;
+		}
+		return true;
+	}
 
+	/**
+	 * Usage: isOrderedP4(g,a,b,c,d). Checks if a-b-c-d is a P4 with endpoints a and d. 
+	 * @param g
+	 * @param v
+	 * @return
+	 */
+	public static <V,E> boolean isOrderedP4(SimpleGraph<V,E> g, V... v) {
+		if (v.length != 4) {
+			System.err.println("isOrderedP4 requires 4 nodes. Found " + v);
+			return false;
+		}
+		if (g.containsEdge(v[0], v[2])) return false;
+		if (g.containsEdge(v[0], v[3])) return false;
+		if (g.containsEdge(v[1], v[3])) return false;
+		if (g.containsEdge(v[0], v[1]) == false) return false;
+		if (g.containsEdge(v[1], v[2]) == false) return false;
+		if (g.containsEdge(v[2], v[3]) == false) return false;
+		return true;
+	}
 	
+	/**
+	 * Inefficiently checks if g is a cograph. Tests all 4-sets for being a P4.
+	 * @param g
+	 * @return
+	 */
+	public static <V,E> boolean isCograph(SimpleGraph<V,E> g) {
+		ArrayList<V> vertices = new ArrayList<V>(g.vertexSet());
+		int n = vertices.size();
+		for (int i=0; i<n; i++) {
+			for (int j=0; j<n; j++) {
+				for (int k=0; k<n; k++) {
+					for (int m=0; m<n; m++) {
+						if (isP4(g,vertices.get(i),vertices.get(j),vertices.get(k),vertices.get(m))) return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Extremely inefficiently decides if g is trivially perfect
+	 * @param g
+	 * @return
+	 */
+	public static <V,E> boolean isTriviallyPerfect(SimpleGraph<V,E> g){
+		// (P4,C4)-free . AKA chordal cographs.
+		if (isCograph(g) && isChordal(g)) return true;
+		return false;
+	}
+
+	/**
+	 * Extremely inefficiently decides if g is a threshold graph
+	 * @param g
+	 * @return
+	 */
+	public static <V,E> boolean isThreshold(SimpleGraph<V,E> g){
+		// (P4,C4,2K2)-free . AKA trivially perfect and co-triv perfect. AKA split cograph.
+		if (isCograph(g) && isSplit(g)) return true;
+		return false;
+	}
+
 }
