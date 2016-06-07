@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -317,4 +318,36 @@ public class Recognition {
 		return false;
 	}
 
+	
+	/**
+	 * Finds Partial closure of a subset of vertices
+	 * @param g
+	 * @return
+	 */
+	public static <V,E> Collection<V> partialClosure(SimpleGraph<V,E> g, Collection<V> vertices){
+		// (P4,C4,2K2)-free . AKA trivially perfect and co-triv perfect. AKA split cograph.
+		HashSet<V> partials=new HashSet<V>();
+		int count=0;
+		
+		for (V v : g.vertexSet()) {
+			count=0;
+			partials = new HashSet<V>();
+
+			if (vertices.contains(v)) continue;
+
+			for (V u : vertices) {
+				if (g.containsEdge(u,v)) count++;
+			}
+			// v is partial on the set if count is not 0 and not the size of the set
+			partials.add(v);
+		}
+
+		
+		if (count > 0 && count < vertices.size()) {
+			partials.addAll(vertices);
+			return partialClosure(g, partials);
+		}
+		else return vertices;
+	}
+	
 }
