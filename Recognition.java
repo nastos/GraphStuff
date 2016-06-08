@@ -285,9 +285,9 @@ public class Recognition {
 		ArrayList<V> vertices = new ArrayList<V>(g.vertexSet());
 		int n = vertices.size();
 		for (int i=0; i<n; i++) {
-			for (int j=0; j<n; j++) {
-				for (int k=0; k<n; k++) {
-					for (int m=0; m<n; m++) {
+			for (int j=i+1; j<n; j++) {
+				for (int k=j+1; k<n; k++) {
+					for (int m=k+1; m<n; m++) {
 						if (isP4(g,vertices.get(i),vertices.get(j),vertices.get(k),vertices.get(m))) return false;
 					}
 				}
@@ -318,6 +318,52 @@ public class Recognition {
 		return false;
 	}
 
+	/**
+	 * Extremely inefficiently decides if g is a p4-sparse graph
+	 * @param g
+	 * @return
+	 */
+	public static <V,E> boolean isP4Sparse(SimpleGraph<V,E> g){
+		// Def: Every set of 5 vertices induces at most one P4
+		ArrayList<V> v = new ArrayList<V>(g.vertexSet());
+		int n = v.size();
+		for (int i=0; i<n; i++) {
+			for (int j=i+1; j<n; j++) {
+				for (int k=j+1; k<n; k++) {
+					for (int m=k+1; m<n; m++) {
+						int count = 0;
+						if (isP4(g,v.get(i),v.get(j),v.get(k),v.get(m))) count ++;
+						for (int p=m+1; p<n; p++) {
+							if (isP4(g,v.get(i),v.get(j),v.get(k),v.get(p))) count++;
+							if (count >= 2) {
+								System.err.println(g + " is not p4-sparse because " + v.get(i) +" "+v.get(j)+" "+v.get(k)+" "+v.get(m)+" "+v.get(p) + " induces many P4s");
+								return false;
+							}
+							if (isP4(g,v.get(i),v.get(j),v.get(p),v.get(m))) count++;
+							if (count >= 2) {
+								System.err.println(g + " is not p4-sparse because " + v.get(i) +" "+v.get(j)+" "+v.get(k)+" "+v.get(m)+" "+v.get(p) + " induces many P4s");
+								return false;
+							}
+							if (isP4(g,v.get(i),v.get(p),v.get(k),v.get(m))) count++;
+							if (count >= 2) {
+								System.err.println(g + " is not p4-sparse because " + v.get(i) +" "+v.get(j)+" "+v.get(k)+" "+v.get(m)+" "+v.get(p) + " induces many P4s");
+								return false;
+							}
+							if (isP4(g,v.get(p),v.get(j),v.get(k),v.get(m))) count++;
+							if (count >= 2) {
+								System.err.println(g + " is not p4-sparse because " + v.get(i) +" "+v.get(j)+" "+v.get(k)+" "+v.get(m)+" "+v.get(p) + " induces many P4s");
+								return false;
+							}
+							
+							
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
 	
 	/**
 	 * Finds Partial closure of a subset of vertices
@@ -341,7 +387,6 @@ public class Recognition {
 			// v is partial on the set if count is not 0 and not the size of the set
 			partials.add(v);
 		}
-
 		
 		if (count > 0 && count < vertices.size()) {
 			partials.addAll(vertices);
@@ -349,5 +394,6 @@ public class Recognition {
 		}
 		else return vertices;
 	}
+	
 	
 }
