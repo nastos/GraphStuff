@@ -1,9 +1,11 @@
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 
 import org.jgrapht.Graphs;
@@ -395,5 +397,56 @@ public class Recognition {
 		else return vertices;
 	}
 	
+	/**
+	 * returns a map of vertex colours from 1 to k found by a greedy colouring with unknown vertex order
+	 * @param g
+	 * @return Map with integer colours
+	 */
+	public static <V,E> Map<V,Integer> greedyColouring (SimpleGraph<V,E> g){
+		Map<V,Integer> m = new HashMap<V,Integer>();
+		ArrayList<V> vertexOrder = new ArrayList<V>(g.vertexSet());
+		return greedyColouring(g,vertexOrder);
+	}
 	
+	/**
+	 * returns a map of vertex colours from 1 to k found by a greedy colouring with unknown vertex order
+	 * @param g
+	 * @return Map with integer colours
+	 */
+	public static <V,E> Map<V,Integer> greedyColoring (SimpleGraph<V,E> g){
+		return greedyColouring(g);
+	}
+
+	/**
+	 * returns a map of vertex colours from 1 to k found by a greedy colouring processed in given vertex order
+	 * @param g
+	 * @return Map with integer colours
+	 */
+	public static <V,E> Map<V,Integer> greedyColouring (SimpleGraph<V,E> g, ArrayList<V> vertexOrder){
+		Map<V,Integer> m = new HashMap<V,Integer>();
+		for (int i=0; i<vertexOrder.size(); i++) {
+			//find colours of neighbours
+			//assign lowest colour available
+			HashSet<Integer> usedColours = new HashSet<Integer>();
+			for (int j=0; j<i; j++) {
+				if (g.containsEdge(vertexOrder.get(i), vertexOrder.get(j)) && m.containsKey(vertexOrder.get(j))) usedColours.add(m.get(vertexOrder.get(j)));
+			}
+			Integer newCol = 1;
+			while (usedColours.contains(newCol)) {
+				newCol++;
+			}
+			m.put(vertexOrder.get(i), newCol);
+		}
+		return m;
+	}
+
+	/**
+	 * returns a map of vertex colours from 1 to k found by a greedy colouring processed in given vertex order
+	 * @param g
+	 * @return Map with integer colours
+	 */
+	public static <V,E> Map<V,Integer> greedyColoring (SimpleGraph<V,E> g, ArrayList<V> vertexOrder){
+		return greedyColouring(g,vertexOrder);
+	}
+
 }
