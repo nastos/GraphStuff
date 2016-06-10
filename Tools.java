@@ -2,7 +2,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jgrapht.Graphs;
 import org.jgrapht.alg.DijkstraShortestPath;
@@ -201,4 +203,35 @@ public class Tools {
 		return true;
 	}
 
+	/**
+	 * Greedily finds a large clique in g. Serves as lower bound to Max Clique.
+	 * @param g a simple graph
+	 * @return A set of vertices inducing a clique
+	 */
+	
+	public static <V,E> Set<V> greedyClique(SimpleGraph<V,E> g) {
+		
+		Map<V,Integer> deg = new HashMap<V,Integer>();
+		for (V v: g.vertexSet()) deg.put(v, g.degreeOf(v));
+		List<Map.Entry<V,Integer>> sortedDeg = MapSortByVal.getMapSortedByValue(deg);
+		
+		Set<V> clique = new HashSet<V>();
+		
+		int i=sortedDeg.size();
+		while (i >= 0) {
+			i--;
+			boolean addIt = true;
+			for (V v : clique) {
+				if (g.containsEdge(v, sortedDeg.get(i).getKey()) == false) {
+					addIt=false;
+					break;
+				}
+			}
+			if (addIt) clique.add(sortedDeg.get(i).getKey());
+		}
+		
+		return clique;
+	}
+
+	
 }

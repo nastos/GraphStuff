@@ -17,6 +17,7 @@ public class Sample {
         System.out.println("Shortest path from 99 to 100:");
         List shortest_path =   DijkstraShortestPath.findPathBetween(g, 99, 100);
         System.out.println(shortest_path);
+        System.out.println(Tools.greedyColoring(g));
         
     }
 }
