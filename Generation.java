@@ -9,6 +9,12 @@ public class Generation{
 
 	}
 
+	/**
+	 * Builds an Erdos Renyi random graph with edge probability p
+	 * @param n
+	 * @param p
+	 * @return
+	 */
 	public static SimpleGraph<Integer,DefaultEdge> ER(int n, double p){
 		// Returns a graph with n nodes named 1 to n.
 		SimpleGraph<Integer,DefaultEdge> g = new SimpleGraph<Integer,DefaultEdge>(DefaultEdge.class);
@@ -24,6 +30,12 @@ public class Generation{
 		return g;
 	}
 
+	/**
+	 * Building an Erdos Renyi random graph with exactly m edges 
+	 * @param n
+	 * @param m
+	 * @return
+	 */
 	public static SimpleGraph<Integer,DefaultEdge> ER(int n, int m){
 		// Returns a graph with n nodes named 1 to n and exactly m edges.
 		SimpleGraph<Integer,DefaultEdge> g = new SimpleGraph<Integer,DefaultEdge>(DefaultEdge.class);
