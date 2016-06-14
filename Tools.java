@@ -2,8 +2,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.PriorityQueue;
+import java.util.Comparator;
 import java.util.Set;
 
 import org.jgrapht.Graphs;
@@ -173,6 +177,75 @@ public class Tools {
 	}
 
 	/**
+	 * Abandoned. Do not use. Does nothing in current form. Kept for historical reasons.
+	 * Changed to private. 
+	 * 
+	 * @param g
+	 * @param v
+	 * @return
+	 */
+	private static <V,E> List<V> lexBFS (SimpleGraph<V,E> g, V v){
+				
+		Map <V,ArrayList<V>> lexlabel = new HashMap<V,ArrayList<V>>();
+		// Comparator<Map.Entry<V, ArrayList<Integer>>> comparator = new lexComparator();
+		// PriorityQueue<Map.Entry<V, ArrayList<Integer>>> pq = new PriorityQueue<Map.Entry<V, ArrayList<Integer>>>(g.vertexSet().size(), comparator);
+		
+		// Make BFS queue
+		List<V> grey = new LinkedList<V>();
+		grey.addAll(Graphs.neighborListOf(g, v));
+		// GARBAGE
+
+		return null;
+	}
+	
+	
+	/**
+	 * Private method to split vertex partitions within a lexBFS search.
+	 * @param listoflists
+	 * @param g
+	 * @param v
+	 */
+	private static <V,E> void pivot(List<List<V>> listoflists, SimpleGraph<V,E> g, V v) {
+		int index = 0;
+		if (listoflists == null) return; 
+		while (index < listoflists.size()) {
+			if (listoflists.get(index).size() == 0) {
+				listoflists.remove(index);
+				continue;
+			}
+			List<V> outside = new LinkedList<V>();
+			for (V u : listoflists.get(index)) {
+				if (g.containsEdge(u, v) == false) outside.add(u);
+			}
+			if (outside.size() > 0) {
+				listoflists.get(index).removeAll(outside);
+				listoflists.add(index+1, outside);				
+			}
+			LinkedList<V> single = new LinkedList<V>();
+			single.add(v);
+			listoflists.add(index, single);
+			index += 3;
+		}
+	}
+
+	/**
+	 * Turns a list of list elements into a single list of elements. Used in partition-based implementation of LexBFS
+	 * 
+	 * @param listoflists
+	 * @return
+	 */
+	private static <V> List<V> listize(List<List<V>> listoflists) {
+		List<V> output = new ArrayList<V>();
+		for (List<V> l : listoflists) {
+			for (V v : l) {
+				output.add(v);
+			}
+		}
+		return output;
+	}
+
+	
+	/**
 	 * Checks if a graph has a simplicial vertex
 	 * @param g
 	 * @return true if the graph has a simplicial vertex
@@ -233,5 +306,30 @@ public class Tools {
 		return clique;
 	}
 
-	
+	/**
+	 * Do not use unless this message is removed
+	 *
+	 * @param <V>
+	 */
+	private class lexComparator <V> implements Comparator<Map.Entry<V, ArrayList<Integer>>>{
+
+		// UNUSED METHOD. DO NOT USE. KEPT FOR HISTORICAL REASONS
+		
+		@Override
+		public int compare(Entry<V, ArrayList<Integer>> arg0, Entry<V, ArrayList<Integer>> arg1) {
+			ArrayList<Integer> list0 = arg0.getValue();
+			ArrayList<Integer> list1 = arg0.getValue();
+			
+			while (true) {
+				if (list0.isEmpty()) return Integer.MAX_VALUE;
+				if (list1.isEmpty()) return Integer.MIN_VALUE;
+				int a = list0.remove(0);
+				int b = list1.remove(0);
+				if (a != b) return b-a;
+				// otherwise, iterate through while loop again with smaller lists
+			}
+		}
+		
+	}	
 }
+
