@@ -185,13 +185,17 @@ public class Tools {
 	 * @return
 	 */
 	private static <V,E> List<V> lexBFS (SimpleGraph<V,E> g, V v){
-				
-		Map <V,ArrayList<V>> lexlabel = new HashMap<V,ArrayList<V>>();
-		// Comparator<Map.Entry<V, ArrayList<Integer>>> comparator = new lexComparator();
-		// PriorityQueue<Map.Entry<V, ArrayList<Integer>>> pq = new PriorityQueue<Map.Entry<V, ArrayList<Integer>>>(g.vertexSet().size(), comparator);
+
+		ArrayList<List<V>> listOfLists = new ArrayList<ArrayList<V>>();
+		listOfLists.add(new ArrayList<V>(g.vertexSet()));
 		
-		// Make BFS queue
-		List<V> grey = new LinkedList<V>();
+		
+		List<V> processed = new LinkedList<V>();
+		processed.add(v);
+		
+		pivot(listOfLists,v);
+		
+		
 		grey.addAll(Graphs.neighborListOf(g, v));
 		// GARBAGE
 
@@ -206,8 +210,9 @@ public class Tools {
 	 * @param v
 	 */
 	private static <V,E> void pivot(List<List<V>> listoflists, SimpleGraph<V,E> g, V v) {
+		// v is assumed to NOT be in the list. i.e. it is extracted first, then we pivot on it, then the vertex is added in this process.
 		int index = 0;
-		if (listoflists == null) return; 
+		if (listoflists == null) return;
 		while (index < listoflists.size()) {
 			if (listoflists.get(index).size() == 0) {
 				listoflists.remove(index);
@@ -291,7 +296,7 @@ public class Tools {
 		Set<V> clique = new HashSet<V>();
 		
 		int i=sortedDeg.size();
-		while (i >= 0) {
+		while (i > 0) {
 			i--;
 			boolean addIt = true;
 			for (V v : clique) {
