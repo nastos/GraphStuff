@@ -177,29 +177,28 @@ public class Tools {
 	}
 
 	/**
-	 * Abandoned. Do not use. Does nothing in current form. Kept for historical reasons.
-	 * Changed to private. 
+	 * LexBFS of a graph g starting at vertex v
 	 * 
 	 * @param g
 	 * @param v
-	 * @return
+	 * @return a list of vertices in LexBFS order
 	 */
-	private static <V,E> List<V> lexBFS (SimpleGraph<V,E> g, V v){
+	public static <V,E> List<V> lexBFS (SimpleGraph<V,E> g, V v){
 
-		ArrayList<List<V>> listOfLists = new ArrayList<ArrayList<V>>();
+		List<List<V>> listOfLists = new ArrayList<List<V>>();
 		listOfLists.add(new ArrayList<V>(g.vertexSet()));
-		
-		
-		List<V> processed = new LinkedList<V>();
-		processed.add(v);
-		
-		pivot(listOfLists,v);
-		
-		
-		grey.addAll(Graphs.neighborListOf(g, v));
-		// GARBAGE
 
-		return null;
+		ArrayList<V> lexorder = new ArrayList<V>();
+		listOfLists.get(0).remove(v);
+		lexorder.add(v);
+		Tools.pivot(listOfLists,g,lexorder.get(0));	
+		
+		for (int i=1; i<g.vertexSet().size(); i++) {
+			lexorder.add(extract(listOfLists));
+			Tools.pivot(listOfLists,g,lexorder.get(i));
+		}
+
+		return lexorder;
 	}
 	
 	
@@ -226,13 +225,24 @@ public class Tools {
 				listoflists.get(index).removeAll(outside);
 				listoflists.add(index+1, outside);				
 			}
-			LinkedList<V> single = new LinkedList<V>();
-			single.add(v);
-			listoflists.add(index, single);
-			index += 3;
+			//LinkedList<V> single = new LinkedList<V>();
+			//single.add(v);
+			//listoflists.add(index, single);
+			//index += 3;
+			index += 2;
 		}
 	}
 
+	private static <V> V extract(List<List<V>> listOfLists) {
+		if (listOfLists.size() == 0) return null;
+		for (List<V> ll : listOfLists) {
+			if (ll.size() == 0) continue;
+			return ll.remove(0);
+		}
+		return null;
+	}
+	
+	
 	/**
 	 * Turns a list of list elements into a single list of elements. Used in partition-based implementation of LexBFS
 	 * 
