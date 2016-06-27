@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -177,14 +178,65 @@ public class Tools {
 	}
 
 	/**
-	 * LexBFS of a graph g starting at vertex v
+	 * Max Cardinality Search (MCS) of a graph g starting at vertex v. Not linear time. Needs a sorted list data structure to extract max quickly.
 	 * 
 	 * @param g
 	 * @param v
-	 * @return a list of vertices in LexBFS order
+	 * @return a list of vertices in MCS order
 	 */
-	public static <V,E> List<V> lexBFS (SimpleGraph<V,E> g, V v){
+	public static <V,E> List<V> MCS (SimpleGraph<V,E> g, V v){
 
+		if (g.vertexSet().contains(v) == false) {
+			System.err.println("Cannot perform MCS starting at " + v + " because it is not in the graph. Returned null.");
+			return null;
+		}
+		
+		Map<V,Integer> values = new HashMap<V,Integer>();
+		for (V u : g.vertexSet()) {
+			if (u==v) continue;
+			values.put(u, 0);
+		}
+		
+		/*
+		PriorityQueue<Map.Entry<V, Integer>> sortedList = new PriorityQueue<Map.Entry<V,Integer>>(new Comparator<Map.Entry<V,Integer>>() {
+	        public int compare(Map.Entry<V, Integer> o1, Map.Entry<V, Integer> o2) {
+	            return (o1.getValue() - o2.getValue());
+	        }
+	    });
+
+		for (Map.Entry<V, Integer> me : values.entrySet()) {
+			sortedList.add(me);
+		}
+		*/
+
+		List<V> output = new ArrayList<V>();
+		output.add(v);
+		
+		// bah ... I'm just going to implement my own sorted list class for entry pairs.
+		
+		for (V u : Graphs.neighborListOf(g, v)) {
+			increment(sortedList,values,u);
+		}
+		
+		
+		
+		
+		
+		
+		Iterator<V> u = g.vertexSet().iterator();
+		
+		for (int i=0; i<g.vertexSet().size(); i++) {
+			index.put(u.next(), i);
+		}
+		
+		int[] label = new int[g.vertexSet().size()];
+		label[label.get(v)] = -1; // first node of the MCS
+		for (V w : Graphs.neighborListOf(g, v)) label[label.get(w)]++;
+		
+		List<V> output = new ArrayList<V>();
+		output.add(v);
+		
+		
 		List<List<V>> listOfLists = new ArrayList<List<V>>();
 		listOfLists.add(new ArrayList<V>(g.vertexSet()));
 
@@ -201,6 +253,58 @@ public class Tools {
 		return lexorder;
 	}
 	
+	
+	/** Private method to increment an entry in this list and maintain sorted order
+	 * @param <V>
+	 * @param <V> vertex type
+	 * @param sortedList list of Map Entries
+	 * @param u
+	 */
+	private static <V> void increment(List<Entry<V, Integer>> sortedList, Map<V, Integer> values, V u) {
+		int oldVal = values.get(u);
+		values.put(u,oldVal+1);
+		int uPos = -1;
+		
+		int positionToInsert = 0;
+		for (int position=0; position<sortedList.size(); position++) {
+			if (sortedList.get(position).getValue() <= (oldVal+1)) {
+				 
+			}
+		}
+			
+		
+	}
+
+
+	/**
+	 * LexBFS of a graph g starting at vertex v
+	 * 
+	 * @param g
+	 * @param v
+	 * @return a list of vertices in LexBFS order
+	 */
+	public static <V,E> List<V> lexBFS (SimpleGraph<V,E> g, V v){
+
+		if (g.vertexSet().contains(v) == false) {
+			System.err.println("Cannot perform lexbfs starting at " + v + " because it is not in the graph. Returned null.");
+			return null;
+		}
+		
+		List<List<V>> listOfLists = new ArrayList<List<V>>();
+		listOfLists.add(new ArrayList<V>(g.vertexSet()));
+
+		ArrayList<V> lexorder = new ArrayList<V>();
+		listOfLists.get(0).remove(v);
+		lexorder.add(v);
+		Tools.pivot(listOfLists,g,lexorder.get(0));	
+		
+		for (int i=1; i<g.vertexSet().size(); i++) {
+			lexorder.add(extract(listOfLists));
+			Tools.pivot(listOfLists,g,lexorder.get(i));
+		}
+
+		return lexorder;
+	}
 	
 	/**
 	 * Private method to split vertex partitions within a lexBFS search.
@@ -233,6 +337,11 @@ public class Tools {
 		}
 	}
 
+	/**
+	 * private method to find the first non-null, non-empty item in a list of lists
+	 * @param listOfLists
+	 * @return
+	 */
 	private static <V> V extract(List<List<V>> listOfLists) {
 		if (listOfLists.size() == 0) return null;
 		for (List<V> ll : listOfLists) {
@@ -241,7 +350,6 @@ public class Tools {
 		}
 		return null;
 	}
-	
 	
 	/**
 	 * Turns a list of list elements into a single list of elements. Used in partition-based implementation of LexBFS
