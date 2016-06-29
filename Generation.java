@@ -34,6 +34,30 @@ public class Generation{
 	}
 
 	/**
+	 * Builds an ER-type of random bipartite graph with edge probability p
+	 * @param n, m
+	 * @param p
+	 * @return
+	 */
+	public static SimpleGraph<Integer,DefaultEdge> BipartiteER(int n, int m, double p){
+		// Returns a graph with bipartition 1 to n and (n+1) to (n+m).
+		SimpleGraph<Integer,DefaultEdge> g = new SimpleGraph<Integer,DefaultEdge>(DefaultEdge.class);
+		Random r = new Random();
+		
+		
+		for (int i=1; i<=n; i++) g.addVertex(i);
+		for (int i=n+1; i<=n+m; i++) g.addVertex(i);
+	
+		for (int i=1; i<n; i++) {
+			for (int j=n+1; j<=n+m; j++) {
+				if (r.nextDouble() <= p) g.addEdge(i, j);
+			}
+		}
+		return g;
+	}
+
+	
+	/**
 	 * Building an Erdos Renyi random graph with exactly m edges 
 	 * @param n
 	 * @param m
