@@ -191,66 +191,30 @@ public class Tools {
 			return null;
 		}
 		
-		Map<V,Integer> values = new HashMap<V,Integer>();
+		mySortedList<V> values = new mySortedList<V>();
 		for (V u : g.vertexSet()) {
 			if (u==v) continue;
-			values.put(u, 0);
+			values.add(u, 0);
 		}
 		
-		/*
-		PriorityQueue<Map.Entry<V, Integer>> sortedList = new PriorityQueue<Map.Entry<V,Integer>>(new Comparator<Map.Entry<V,Integer>>() {
-	        public int compare(Map.Entry<V, Integer> o1, Map.Entry<V, Integer> o2) {
-	            return (o1.getValue() - o2.getValue());
-	        }
-	    });
-
-		for (Map.Entry<V, Integer> me : values.entrySet()) {
-			sortedList.add(me);
-		}
-		*/
-
 		List<V> output = new ArrayList<V>();
 		output.add(v);
-		
-		// bah ... I'm just going to implement my own sorted list class for entry pairs.
 		
 		for (V u : Graphs.neighborListOf(g, v)) {
-			increment(sortedList,values,u);
-		}
-		
-		
-		
-		
-		
-		
-		Iterator<V> u = g.vertexSet().iterator();
-		
-		for (int i=0; i<g.vertexSet().size(); i++) {
-			index.put(u.next(), i);
-		}
-		
-		int[] label = new int[g.vertexSet().size()];
-		label[label.get(v)] = -1; // first node of the MCS
-		for (V w : Graphs.neighborListOf(g, v)) label[label.get(w)]++;
-		
-		List<V> output = new ArrayList<V>();
-		output.add(v);
-		
-		
-		List<List<V>> listOfLists = new ArrayList<List<V>>();
-		listOfLists.add(new ArrayList<V>(g.vertexSet()));
-
-		ArrayList<V> lexorder = new ArrayList<V>();
-		listOfLists.get(0).remove(v);
-		lexorder.add(v);
-		Tools.pivot(listOfLists,g,lexorder.get(0));	
-		
-		for (int i=1; i<g.vertexSet().size(); i++) {
-			lexorder.add(extract(listOfLists));
-			Tools.pivot(listOfLists,g,lexorder.get(i));
+			values.increment(u);
 		}
 
-		return lexorder;
+		System.out.println(values);
+		while (output.size() < g.vertexSet().size()) {
+			V u = values.pop().getKey();
+			output.add(u);
+			for (V x : Graphs.neighborListOf(g, u)) {
+				if (values.contains(x)) values.increment(x);
+			}			
+			//System.out.println(values);
+		}
+		
+		return output;
 	}
 	
 	
