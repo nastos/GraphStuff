@@ -12,6 +12,7 @@ import java.util.Comparator;
 import java.util.Set;
 
 import org.jgrapht.Graphs;
+import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.graph.SimpleGraph;
 
@@ -363,6 +364,36 @@ public class Tools {
 		return true;
 	}
 
+	/**
+	 * Checks if v is the top of a house or bigger structure in graph g. Used to recognize house,hole-free graphs
+	 * @param g
+	 * @param v
+	 * @return
+	 */
+
+	public static <V,E> boolean isTopOfBuilding(SimpleGraph<V,E> g, V v) {
+		List<V> nbrs = new ArrayList<V>(Graphs.neighborListOf(g, v));
+		for (int i=0; i<nbrs.size(); i++) {
+			V x = nbrs.get(i);
+			for (int j=i+1; j<nbrs.size(); j++) {
+				V y = nbrs.get(j);
+				SimpleGraph<V,E> h = copy(g);
+				Set<V> commonNbrs = (Set<V>) Graphs.neighborListOf(g, x);
+				commonNbrs.retainAll((Set<V>) Graphs.neighborListOf(g, y));
+				h.removeAllVertices(commonNbrs); // removes v and all other commoners
+
+				if (g.containsEdge(x, y)) {
+					h.removeEdge(x, y);
+				}
+				
+				ConnectivityInspector<V,E> ci = new ConnectivityInspector(h);
+				
+				if (ci.pathExists(x, y)) return true;
+			}
+		}
+		return false;
+	}
+	
 	/**
 	 * Greedily finds a large clique in g. Serves as lower bound to Max Clique.
 	 * @param g a simple graph
