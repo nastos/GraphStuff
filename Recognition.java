@@ -144,6 +144,19 @@ public class Recognition {
 	}
 
 	/**
+	 * Tests if a graph is (house,hole)-free (i.e. free of C_{k>4} and co-P_5)
+	 * @param g
+	 * @return
+	 */
+	public static <V,E> boolean isHHfree(SimpleGraph<V,E> g) {
+		for (V v : g.vertexSet()) {
+			if (Tools.isTopOfBuilding(g, v)) return false;
+		}
+		return true;
+	}
+	
+	
+	/**
 	 * Usage: isOrderedP4(g,a,b,c,d). Checks if a-b-c-d is a P4 with endpoints a and d. 
 	 * @param g
 	 * @param v
@@ -182,6 +195,8 @@ public class Recognition {
 		}
 		return true;
 	}
+	
+	
 
 	/**
 	 * Extremely inefficiently decides if g is trivially perfect
