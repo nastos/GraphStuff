@@ -22,8 +22,8 @@ public class Generation{
 		// Returns a graph with n nodes named 1 to n.
 		SimpleGraph<Integer,DefaultEdge> g = new SimpleGraph<Integer,DefaultEdge>(DefaultEdge.class);
 		Random r = new Random();
-		
-		
+
+
 		for (int i=1; i<=n; i++) g.addVertex(i);
 		for (int i=1; i<n; i++) {
 			for (int j=1; j<=n; j++) {
@@ -43,11 +43,11 @@ public class Generation{
 		// Returns a graph with bipartition 1 to n and (n+1) to (n+m).
 		SimpleGraph<Integer,DefaultEdge> g = new SimpleGraph<Integer,DefaultEdge>(DefaultEdge.class);
 		Random r = new Random();
-		
-		
+
+
 		for (int i=1; i<=n; i++) g.addVertex(i);
 		for (int i=n+1; i<=n+m; i++) g.addVertex(i);
-	
+
 		for (int i=1; i<n; i++) {
 			for (int j=n+1; j<=n+m; j++) {
 				if (r.nextDouble() <= p) g.addEdge(i, j);
@@ -56,7 +56,47 @@ public class Generation{
 		return g;
 	}
 
-	
+	/**
+	 * Builds an ER-type of random k-partite graph with edge probabilities ab, bc, ca for probability of an edge between each pair of parts
+	 * @param A
+	 * @param B
+	 * @param C
+	 * @param ab
+	 * @param bc
+	 * @param ca
+	 * @return
+	 */
+	public static SimpleGraph<Integer,DefaultEdge> BipartiteER(int A, int B, int C, double ab, double bc, double ca){
+		// Returns a graph with bipartition 1 to n and (n+1) to (n+m).
+		SimpleGraph<Integer,DefaultEdge> g = new SimpleGraph<Integer,DefaultEdge>(DefaultEdge.class);
+		Random r = new Random();
+
+
+		for (int i=1; i<=A; i++) g.addVertex(i);
+		for (int i=A+1; i<=A+B; i++) g.addVertex(i);
+		for (int i=A+B+1; i<=A+B+C; i++) g.addVertex(i);
+
+		for (int i=1; i<A; i++) {
+			for (int j=A+1; j<=A+B; j++) {
+				if (r.nextDouble() <= ab) g.addEdge(i, j);
+			}
+		}
+
+		for (int i=1; i<A; i++) {
+			for (int j=A+B+1; j<=A+C; j++) {
+				if (r.nextDouble() <= ca) g.addEdge(i, j);
+			}
+		}
+
+		for (int i=A+1; i<A+B; i++) {
+			for (int j=A+B+1; j<=A+B+C; j++) {
+				if (r.nextDouble() <= bc) g.addEdge(i, j);
+			}
+		}
+		
+		return g;
+	}
+
 	/**
 	 * Building an Erdos Renyi random graph with exactly m edges 
 	 * @param n
@@ -67,7 +107,7 @@ public class Generation{
 		// Returns a graph with n nodes named 1 to n and exactly m edges.
 		SimpleGraph<Integer,DefaultEdge> g = new SimpleGraph<Integer,DefaultEdge>(DefaultEdge.class);
 		Random r = new Random();
-		
+
 		for (int i=1; i<=n; i++) g.addVertex(i);
 		int numEdges=0;
 		while (numEdges < m) {
@@ -79,7 +119,7 @@ public class Generation{
 		}
 		return g;
 	}
-	
+
 	public static SimpleGraph<Integer,DefaultEdge> path(int n, int i){
 		// Returns a path on n vertices with vertex labels starting at i
 		// vertices will be labeled i to n+i-1 (so path(n,1) makes a path with vertices labeled 1 to n)
@@ -115,7 +155,7 @@ public class Generation{
 		g.addEdge(n+i-1, i);
 		return g;
 	}
-	
+
 	public static SimpleGraph<Integer,DefaultEdge> cycle(int n){
 		// Returns a cycle on n vertices with vertex labels starting at 1
 		return cycle(n,1);
