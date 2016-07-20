@@ -39,10 +39,10 @@ public class Tools {
 		int count=0;
 		
 		for (V v : g.vertexSet()) {
+			if (vertices.contains(v)) continue;
+
 			count=0;
 			partials = new HashSet<V>();
-	
-			if (vertices.contains(v)) continue;
 	
 			for (V u : vertices) {
 				if (g.containsEdge(u,v)) count++;
@@ -51,7 +51,7 @@ public class Tools {
 			partials.add(v);
 		}
 		
-		if (count > 0 && count < vertices.size()) {
+		if (count > 0) {
 			partials.addAll(vertices);
 			return partialClosure(g, partials);
 		}
