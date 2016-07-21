@@ -55,5 +55,10 @@ public class mySortedList<V> {
 	public String toString() {
 		return list.toString();
 	}
+
+	public boolean contains(V u) {
+		//System.out.println(u+" " +map.containsKey(u));
+		return map.containsKey(u);
+	}
 	
 }

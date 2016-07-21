@@ -378,8 +378,8 @@ public class Tools {
 			for (int j=i+1; j<nbrs.size(); j++) {
 				V y = nbrs.get(j);
 				SimpleGraph<V,E> h = copy(g);
-				Set<V> commonNbrs = (Set<V>) Graphs.neighborListOf(g, x);
-				commonNbrs.retainAll((Set<V>) Graphs.neighborListOf(g, y));
+				ArrayList<V> commonNbrs = (ArrayList<V>) Graphs.neighborListOf(g, x);
+				commonNbrs.retainAll(Graphs.neighborListOf(g, y));
 				h.removeAllVertices(commonNbrs); // removes v and all other commoners
 
 				if (g.containsEdge(x, y)) {
