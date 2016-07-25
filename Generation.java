@@ -120,6 +120,12 @@ public class Generation{
 		return g;
 	}
 
+	/**
+	 * Creates a path graph on n vertices with vertex labels starting at integer i and counting up by 1
+	 * @param n
+	 * @param i
+	 * @return
+	 */
 	public static SimpleGraph<Integer,DefaultEdge> path(int n, int i){
 		// Returns a path on n vertices with vertex labels starting at i
 		// vertices will be labeled i to n+i-1 (so path(n,1) makes a path with vertices labeled 1 to n)
@@ -133,11 +139,22 @@ public class Generation{
 		return g;
 	}
 
+	/**
+	 * Creates a path graph on n vertices with vertices labeled 1 to n
+	 * @param n
+	 * @return
+	 */
 	public static SimpleGraph<Integer,DefaultEdge> path(int n){
 		// Returns a path on n vertices with vertex labels starting at 1
 		return path(n,1);
 	}
 
+	/**
+	 * Create a cycle graph on n vertices with vertex labels starting at integer i and counting up by 1
+	 * @param n
+	 * @param i
+	 * @return
+	 */
 	public static SimpleGraph<Integer,DefaultEdge> cycle(int n, int i){
 		// Returns a cycle on n vertices with vertex labels starting at i.
 		// vertices will be labeled i to n+i-1, so cycle(n,1) makes a cycle with vertices labeled 1 to n.
@@ -156,11 +173,23 @@ public class Generation{
 		return g;
 	}
 
+	/**
+	 * Creates a cycle graph on n vertices with vertices labeled 1 to n
+	 * @param n
+	 * @return
+	 */
 	public static SimpleGraph<Integer,DefaultEdge> cycle(int n){
 		// Returns a cycle on n vertices with vertex labels starting at 1
 		return cycle(n,1);
 	}
 
+	/**
+	 * Create a graph which is a disjoint union of g1 and g2. Vertex set of g1 and g2 should be disjoint. If any vertices are identical,
+	 * they merge via standard node identification (untested - might throw error)
+	 * @param g1
+	 * @param g2
+	 * @return
+	 */
 	public static SimpleGraph<Integer,DefaultEdge> disjointUnion(SimpleGraph<Integer,DefaultEdge> g1, SimpleGraph<Integer,DefaultEdge> g2){
 		// assumes the vertex set of g1 and g2 are disjoint. If any vertices are identical, they merge via standard node identification (untested - might throw error)
 		SimpleGraph<Integer,DefaultEdge> output = Tools.copy(g1);
@@ -169,6 +198,13 @@ public class Generation{
 		return output;
 	}
 
+	/**
+	 * Create a graph which is a complete join of g1 and g2. Vertex set of g1 and g2 should be disjoint. If any vertices are identical,
+	 * they merge via standard node identification (untested - might throw error)
+	 * @param g1
+	 * @param g2
+	 * @return
+	 */
 	public static SimpleGraph<Integer,DefaultEdge> completeJoin(SimpleGraph<Integer,DefaultEdge> g1, SimpleGraph<Integer,DefaultEdge> g2){
 		// assumes the vertex set of g1 and g2 are disjoint. If any vertices are identical, they merge via standard node identification (untested - might throw error)
 		SimpleGraph<Integer,DefaultEdge> output = Tools.copy(g1);
