@@ -177,6 +177,53 @@ public class Tools {
 		}
 		return m;
 	}
+	
+	public static <V,E> Map<V,Integer> edgeNicheCentrality (SimpleGraph<V,E> g, ArrayList<E> edgeOrder){
+		Map<V,Double> m = new HashMap<V,Double>();
+		Map<E,Integer> p4Cent = p4Cent(g,edgeOrder);
+		
+		for (int i=0; i<edgeOrder.size(); i++) {
+			// edge niche centrality of ij = P4-centrality + min(d(i),d(j)) / (embeddedness(ij)+1)
+
+			HashSet<Integer> usedColours = new HashSet<Integer>();
+			for (int j=0; j<i; j++) {
+				if (g.containsEdge(vertexOrder.get(i), vertexOrder.get(j)) && m.containsKey(vertexOrder.get(j))) usedColours.add(m.get(vertexOrder.get(j)));
+			}
+			Integer newCol = 1;
+			while (usedColours.contains(newCol)) {
+				newCol++;
+			}
+			m.put(vertexOrder.get(i), newCol);
+		}
+		return m;
+	}
+
+	private static <V, E> Map<E, Integer> p4Cent(SimpleGraph<V, E> g, ArrayList<E> edgeOrder) {
+	 ArrayList<V> vs = new ArrayList<V>(g.vertexSet());
+	 int[][] p4scores = P4scorer(g);
+		return null; 
+	 }
+
+	private static <V, E> int[][] P4scorer(SimpleGraph<V, E> g) {
+		 ArrayList<V> vs = new ArrayList<V>(g.vertexSet());
+		 int n = vs.size();
+		 for (int i=0; i<n; i++) {
+			 for (int j=0; j<n; j++) {
+				 if (i==j) continue;
+				 for (int k=0; k<n; k++) {
+					if (k==i || k==j) continue;
+				 	for (int l=i+1; l<n; l++) {
+				 		if
+						 if (Recognition.isP4(g,vs.get(i),vs.get(j),vs.get(k),vs.get(l))) {
+							 if (g.containsEdge(vertices.get(i),vertices.get(j)) 
+						 }
+					 }
+				 }
+			 }
+		// TODO Auto-generated method stub
+		return null;
+
+	}
 
 	/**
 	 * Max Cardinality Search (MCS) of a graph g starting at vertex v. Not linear time. Needs a sorted list data structure to extract max quickly.
